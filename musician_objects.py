@@ -31,12 +31,7 @@ class Drummer(Musician):
         super().__init__(["wham", "diddle", "wham", "diddle"])
 
     def count(self):
-        print(
-            """\t\t\ta one\n
-            and a two\n
-            and a three\n
-            and a four"""
-        )
+        print('a one\nand a two\nand a three\nand a four')
 
     def spontaneouslyCombust(self):
         print(
@@ -60,9 +55,19 @@ class Band(object):
             self.bandName = input('Please select a band name: ')
 
     def addMember(self, memberName, instrument):
-        print(memberName)
-        print(instrument)
+        nameList = []
         instrument.lower()
+        for key in self.members:
+            try:
+                nameList += [self.members[key].name]
+            except AttributeError:
+                pass
+
+        while memberName in nameList:
+            print("We already have a band member by this name!")
+            print("We do not need two!!!")
+            memberName = input('Enter another name: ')
+
         while instrument not in list(self.members.keys()):
             instrument = input('This band only needs a drummer[d], guitariest\
                         [g], or a bassist[b] please choose one: ').lower()
@@ -77,14 +82,17 @@ class Band(object):
             self.drummer = Drummer()
             self.drummer.name = memberName
             self.members['drummer'] = self.drummer
+            print('New member {} the {} hired!'.format(memberName, instrument))
         elif instrument == 'guitarist':
             self.guitarist = Guitarist()
             self.guitarist.name = memberName
             self.members['guitarist'] = self.guitarist
+            print('New member {} the {} hired!'.format(memberName, instrument))
         elif instrument == 'bassist':
             self.bassist = Bassist()
             self.bassist.name = memberName
             self.members['bassist'] = self.bassist
+            print('New member {} the {} hired!'.format(memberName, instrument))
 
     def fireMember(self, memberName):
         if (memberName in [self.drummer.name, self.guitarist.name,
@@ -106,3 +114,23 @@ class Band(object):
                   {bassist}".format(drummer=self.drummer.name,
                                     guitarist=self.guitarist.name,
                                     bassist=self.bassist.name))
+
+    def solosession(self, length):
+        if self.members['drummer'] == '':
+            print("Not happening! We need a drummer! Try the addMember method")
+        else:
+            self.drummer.count()
+            self.drummer.solo(length)
+            print('\n{} on the drums ladies and gentlement\n'
+                  .format(self.drummer.name))
+            if self.members['guitarist'] != '':
+                self.guitarist.solo(length)
+                print('\n{} striking the strings ladies and gentlement\n'
+                      .format(self.guitarist.name))
+            if self.members['bassist'] != '':
+                self.bassist.solo(length)
+                print('\n{} on the bottom bass ladies and gentlement\n'
+                      .format(self.bassist.name))
+            print('\n\nAnd that was {bandName}!!!!!!!!!\n'.
+                  format(bandName=self.bandName,))
+            self.drummer.solo(8)
